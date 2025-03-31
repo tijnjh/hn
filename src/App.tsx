@@ -34,21 +34,21 @@ import "@ionic/react/css/palettes/dark.system.css";
 setupIonicReact();
 
 const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonRouterOutlet>
-        <Route path="/" exact={true}>
-          <Redirect to="/" />
-        </Route>
-        <Route path="/" exact={true}>
-          <Home />
-        </Route>
-        <Route path="/story/:id">
-          <ViewStory />
-        </Route>
-      </IonRouterOutlet>
-    </IonReactRouter>
-  </IonApp>
+	<IonApp>
+		<IonReactRouter>
+			<IonRouterOutlet>
+				<Route path="/" exact={true}>
+					<Redirect to="/" />
+				</Route>
+				<Route path="/" exact={true}>
+					<Home />
+				</Route>
+				<Route path="/story/:id">
+					<ViewStory />
+				</Route>
+			</IonRouterOutlet>
+		</IonReactRouter>
+	</IonApp>
 );
 
 export default App;

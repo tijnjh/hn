@@ -17,6 +17,7 @@ import {
   IonIcon,
 } from "@ionic/react";
 import { logoGithub } from "ionicons/icons";
+import type { Story } from "../lib/types";
 
 const STORIES_PER_PAGE = 25;
 
@@ -36,13 +37,13 @@ async function fetchStories(ids: number[]) {
 }
 
 export default function Home() {
-  const [stories, setStories] = useState<any[]>([]);
+  const [stories, setStories] = useState<Story[]>([]);
   const [page, setPage] = useState(1);
   const [showInitialSpinner, setShowInitialSpinner] = useState(true);
 
   useEffect(() => {
     loadStories(page);
-  }, []);
+  }, [page]);
 
   async function loadStories(page: number) {
     try {
@@ -56,18 +57,18 @@ export default function Home() {
     }
   }
 
-  function loadMore(event: any) {
+  function loadMore(event: Event) {
     setPage((prevPage) => prevPage + 1);
     loadStories(page + 1).then(() => {
-      event.target.complete();
+      (event.target as HTMLIonInfiniteScrollElement).complete();
     });
   }
 
-  function handleRefresh(event: any) {
+  function handleRefresh(event: Event) {
     setPage(1);
     setStories([]);
     loadStories(1).then(() => {
-      event.detail.complete();
+      (event.target as HTMLIonRefresherElement).complete();
     });
   }
 
@@ -77,7 +78,7 @@ export default function Home() {
         <IonToolbar>
           <IonButtons slot="end">
             <IonButton href="https://github.com/tijnjh/hn">
-              <IonIcon slot={"icon-only"} icon={logoGithub}></IonIcon>
+              <IonIcon slot={"icon-only"} icon={logoGithub} />
             </IonButton>
           </IonButtons>
           <IonTitle>Frontpage</IonTitle>
@@ -85,7 +86,7 @@ export default function Home() {
       </IonHeader>
       <IonContent fullscreen>
         <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
-          <IonRefresherContent></IonRefresherContent>
+          <IonRefresherContent />
         </IonRefresher>
         <IonHeader collapse="condense">
           <IonToolbar>
@@ -104,7 +105,7 @@ export default function Home() {
         </IonList>
 
         <IonInfiniteScroll onIonInfinite={loadMore} threshold="100px">
-          <IonInfiniteScrollContent></IonInfiniteScrollContent>
+          <IonInfiniteScrollContent />
         </IonInfiniteScroll>
       </IonContent>
     </IonPage>

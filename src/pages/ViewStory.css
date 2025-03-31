@@ -1,12 +1,12 @@
 .comment-content {
-  transition: height 0.3s ease;
-  overflow: hidden;
+	transition: height 0.3s ease;
+	overflow: hidden;
 }
 
 .comment-content.collapsed {
-  height: 0;
+	height: 0;
 }
 
 .comment-content.expanded {
-  height: calc-size(max-content, size);
+	height: calc-size(max-content, size);
 }

@@ -10,8 +10,9 @@ import {
 } from "@ionic/react";
 import { arrowUp, openOutline } from "ionicons/icons";
 import { formatUrl, relativify } from "../lib/helpers";
+import type { Story } from "../lib/types";
 
-export default function StoryListItem({ story }: { story: any }) {
+export default function StoryListItem({ story }: { story: Story }) {
   return (
     <IonItemSliding>
       <IonItem
@@ -57,7 +58,7 @@ export default function StoryListItem({ story }: { story: any }) {
       </IonItem>
       <IonItemOptions side="start">
         <IonItemOption onClick={() => window.open(story.url, "_blank")}>
-          <IonIcon slot="icon-only" icon={openOutline}></IonIcon>
+          <IonIcon slot="icon-only" icon={openOutline} />
         </IonItemOption>
       </IonItemOptions>
     </IonItemSliding>

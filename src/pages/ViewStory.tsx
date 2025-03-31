@@ -20,6 +20,7 @@ import { useParams } from "react-router";
 import "./ViewStory.css";
 import { arrowUp, openOutline } from "ionicons/icons";
 import { formatUrl, relativify } from "../lib/helpers";
+import type { Story, Comment } from "../lib/types";
 
 async function fetchStory(id: number) {
   const url = `https://node-hnapi.herokuapp.com/item/${id}`;
@@ -28,7 +29,7 @@ async function fetchStory(id: number) {
 }
 
 function ViewMessage() {
-  const [story, setStory] = useState<any>();
+  const [story, setStory] = useState<Story>();
   const [collapsedThreads, setCollapsedThreads] = useState<Set<number>>(
     new Set()
   );
@@ -43,7 +44,7 @@ function ViewMessage() {
   };
 
   useIonViewWillEnter(() => {
-    loadStory(parseInt(params.id, 10));
+    loadStory(Number.parseInt(params.id, 10));
   });
 
   const toggleCollapse = (commentId: number) => {
@@ -59,9 +60,9 @@ function ViewMessage() {
   };
 
   useEffect(() => {
-    document.querySelectorAll("a").forEach((a) => {
-      a.target = "_blank";
-    });
+	for (const a of document.querySelectorAll("a")) {
+		a.target = "_blank"
+	}
   }, []);
 
   return (
@@ -69,7 +70,7 @@ function ViewMessage() {
       <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton text="Frontpage" defaultHref="/"></IonBackButton>
+            <IonBackButton text="Frontpage" defaultHref="/" />
           </IonButtons>
 
           <IonButtons slot="end">
@@ -126,7 +127,7 @@ function ViewMessage() {
               </IonItem>
             </IonList>
 
-            {story.comments.map((comment: any) => (
+            {story.comments.map((comment: Comment) => (
               <IonList key={comment.id} style={{ marginBottom: ".5rem" }}>
                 <IonItem>
                   <IonLabel>
@@ -154,14 +155,13 @@ function ViewMessage() {
                           dangerouslySetInnerHTML={{
                             __html: comment.content,
                           }}
-                        ></div>
+                        />
                       </IonText>
                     </div>
                   </IonLabel>
                 </IonItem>
                 {!collapsedThreads.has(comment.id) && (
-                  <>
-                    {comment.comments.map((reply: any) => (
+                  comment.comments.map((reply: Comment) => (
                       <IonItem
                         key={reply.id}
                         style={{ paddingLeft: `${reply.level}rem` }}
@@ -187,13 +187,12 @@ function ViewMessage() {
                                 dangerouslySetInnerHTML={{
                                   __html: reply.content,
                                 }}
-                              ></div>
+                              />
                             </IonText>
                           </div>
                         </IonLabel>
                       </IonItem>
-                    ))}
-                  </>
+                    ))
                 )}
               </IonList>
             ))}
