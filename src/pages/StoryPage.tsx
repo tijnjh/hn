@@ -1,3 +1,4 @@
+import StoryListing from "@/components/StoryListing";
 import type { Comment, Story } from "@/lib/types";
 import { formatUrl, relativify } from "@/lib/utils";
 import {
@@ -80,45 +81,7 @@ export default function StoryPage({ match: { params } }: StoryPageProps) {
                 {story && (
                     <>
                         <IonList className="mb-2">
-                            <IonItem
-                                href={isExternalLink ? story.url : undefined}
-                                target="_blank"
-                            >
-                                <IonAvatar
-                                    aria-hidden="true"
-                                    slot="start"
-                                    className="rounded-sm"
-                                >
-                                    <img
-                                        alt=""
-                                        src={`https://www.google.com/s2/favicons?domain=${story.url}&sz=64`}
-                                    />
-                                </IonAvatar>
-
-                                <IonLabel>
-                                    <h2>{story.title}</h2>
-                                    <h3 className="flex items-center">
-                                        {story.points}
-                                        <IonIcon icon={arrowUp} />
-                                        <span className="mx-2">
-                                            &bull;
-                                        </span>
-                                        <span className="shrink-0">
-                                            {relativify(story.time)}
-                                        </span>
-                                        {isExternalLink && (
-                                            <>
-                                                <span className="mx-2">
-                                                    &bull;
-                                                </span>
-                                                <span className="truncate">
-                                                    {formatUrl(story.url)}
-                                                </span>
-                                            </>
-                                        )}
-                                    </h3>
-                                </IonLabel>
-                            </IonItem>
+                            <StoryListing link={false} story={story} />
                         </IonList>
                         {story.comments.map((comment) => (
                             <IonList

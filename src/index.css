@@ -102,3 +102,7 @@
     --elevated: var(--dark-gray-6);
   }
 }
+
+a {
+  text-decoration: none !important;
+}

@@ -28,7 +28,7 @@ export default function HomePage() {
         );
     }
 
-    const { isPending, data, refetch, fetchNextPage } = useInfiniteQuery<
+    const { isPending, data, fetchNextPage } = useInfiniteQuery<
         Story[]
     >({
         queryKey: ["stories"],
@@ -54,15 +54,6 @@ export default function HomePage() {
             </IonHeader>
 
             <IonContent fullscreen>
-                <IonRefresher
-                    slot="fixed"
-                    onIonRefresh={() => {
-                        refetch();
-                    }}
-                >
-                    <IonRefresherContent />
-                </IonRefresher>
-
                 <IonHeader collapse="condense">
                     <IonToolbar>
                         <IonTitle size="large">Frontpage</IonTitle>

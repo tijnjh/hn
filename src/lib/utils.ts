@@ -1,10 +1,10 @@
-import { formatDistanceToNow } from "date-fns";
+import dayjs from "dayjs";
 import { tryCatch } from "typecatch";
 
 export function relativify(uts: number) {
   const timestamp = uts * 1000;
   const date = new Date(timestamp);
-  const formatted = formatDistanceToNow(date, { addSuffix: true });
+  const formatted = dayjs(date).fromNow();
   return formatted.replace("about", "");
 }
 
