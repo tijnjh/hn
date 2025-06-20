@@ -38,8 +38,12 @@ export default function LinkPreview(
                 <IonImg
                     className="block"
                     onError={() => setImageLoadError(true)}
-                    src={data?.og.image}
+                    src={data.og.image}
                     alt={data.og.imageAlt || url}
+                    style={{
+                        aspectRatio:
+                            `${data.og.imageWidth}/${data.og.imageHeight}`,
+                    }}
                 />
             )}
             <div className="flex items-center gap-4 px-3 py-4">

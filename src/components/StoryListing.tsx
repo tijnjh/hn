@@ -20,7 +20,7 @@ export default function StoryListing(
                 <LinkPreview
                     url={story.url}
                     href={!link ? story.url : undefined}
-                    className="my-2"
+                    className="my-2.5"
                 />
 
                 <h3 className="flex items-center text-(--gray-1)">
