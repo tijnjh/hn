@@ -17,7 +17,7 @@ export function formatUrl(url: string) {
       : hostname;
   } else {
     throw new Error(
-      `something went wrong when trying to parse a story url: ${error.message}`
+      `something went wrong when trying to parse a story url: ${error.message}`,
     );
   }
 }
