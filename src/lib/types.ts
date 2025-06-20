@@ -10,6 +10,7 @@ export interface Story {
   url: string;
   domain: string;
   comments: Comment[];
+  metadata?: EchoscrapeResponse;
 }
 
 export interface Comment {

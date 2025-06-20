@@ -1,5 +1,5 @@
 import StoryListing from "@/components/StoryListing";
-import type { Story } from "@/lib/types";
+import type { EchoscrapeResponse, Story } from "@/lib/types";
 import {
   IonButton,
   IonButtons,
@@ -21,9 +21,21 @@ import { Fragment } from "react";
 
 export default function HomePage() {
   async function fetchStories({ pageParam }: { pageParam: unknown }) {
-    return await ofetch(
+    const stories = await ofetch(
       `https://node-hnapi.herokuapp.com/news?page=${pageParam}`,
     );
+
+    const metadataPromises = stories.map((story: Story) =>
+      ofetch<EchoscrapeResponse>(`https://echoscrape.tijn.dev/${story.url}`)
+    );
+
+    const metadatas = await Promise.all(metadataPromises);
+
+    for (let i = 0; i < stories.length; i++) {
+      stories[i].metadata = metadatas[i];
+    }
+
+    return stories;
   }
 
   const { isPending, data, fetchNextPage } = useInfiniteQuery<

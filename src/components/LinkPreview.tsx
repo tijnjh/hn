@@ -1,26 +1,17 @@
 import { EchoscrapeResponse } from "@/lib/types";
 import { IonImg } from "@ionic/react";
-import { useQuery } from "@tanstack/react-query";
-import { ofetch } from "ofetch";
 import { useState } from "react";
 
 export default function LinkPreview(
-  { url, href, className }: {
+  { url, metadata, href, className }: {
     url: string;
+    metadata?: EchoscrapeResponse;
     href?: string;
     className?: string;
   },
 ) {
-  const { data, isPending, error } = useQuery({
-    queryKey: ["echoscrape", url],
-    queryFn: () =>
-      ofetch<EchoscrapeResponse>(`https://echoscrape.tijn.dev/${url}`),
-  });
-
-  const shouldDisplayImage = !isPending &&
-    !error &&
-    data?.og?.image &&
-    data.twitter?.card === "summary_large_image";
+  const shouldDisplayImage = metadata?.og?.image &&
+    metadata.twitter?.card === "summary_large_image";
 
   const [imageLoadError, setImageLoadError] = useState(false);
 
@@ -38,10 +29,10 @@ export default function LinkPreview(
         <IonImg
           className="block"
           onError={() => setImageLoadError(true)}
-          src={data.og.image}
-          alt={data.og.imageAlt || url}
+          src={metadata.og.image}
+          alt={metadata.og.imageAlt || url}
           style={{
-            aspectRatio: `${data.og.imageWidth}/${data.og.imageHeight}`,
+            aspectRatio: `${metadata.og.imageWidth}/${metadata.og.imageHeight}`,
           }}
         />
       )}
@@ -52,7 +43,7 @@ export default function LinkPreview(
         />
         <hgroup className="truncate">
           <h4 className="font-medium! text-(--text)">
-            {data?.title}
+            {metadata?.title}
           </h4>
           <p className="text-(--gray-1) text-xs!">{url}</p>
         </hgroup>

@@ -18,6 +18,7 @@ export default function StoryListing(
         <h2>{story.title}</h2>
 
         <LinkPreview
+          metadata={story.metadata}
           url={story.url}
           href={!link ? story.url : undefined}
           className="my-2.5"
