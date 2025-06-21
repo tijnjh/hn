@@ -26,6 +26,7 @@ export interface Comment {
 export interface EchoscrapeResponse {
   title?: string;
   description?: string;
+  favicon?: string;
   themeColor?: string;
   og: {
     title?: string;

@@ -20,7 +20,7 @@ export default function LinkPreview(
   return (
     <Tag
       href={href}
-      onClick={(e) => e.stopPropagation()}
+      onClick={(e) => void e.stopPropagation()}
       target="_blank"
       style={{ textDecoration: "none !important" }}
       className={`block bg-(--base)! hover:bg-(--gray-6)! border border-(--gray-4) rounded-md overflow-clip transition-colors ${className}`}
@@ -28,7 +28,7 @@ export default function LinkPreview(
       {!imageLoadError && shouldDisplayImage && (
         <IonImg
           className="block"
-          onError={() => setImageLoadError(true)}
+          onError={() => void setImageLoadError(true)}
           src={metadata.og.image}
           alt={metadata.og.imageAlt || url}
           style={{
@@ -37,10 +37,7 @@ export default function LinkPreview(
         />
       )}
       <div className="flex items-center gap-4 px-3 py-4">
-        <IonImg
-          className="block rounded-sm size-8 shrink-0"
-          src={`https://www.google.com/s2/favicons?domain=${url}&sz=64`}
-        />
+        {metadata && <Favicon metadata={metadata} />}
         <hgroup className="truncate">
           <h4 className="font-medium! text-(--text)">
             {metadata?.title}
@@ -49,5 +46,22 @@ export default function LinkPreview(
         </hgroup>
       </div>
     </Tag>
+  );
+}
+
+function Favicon({ metadata }: { metadata: EchoscrapeResponse }) {
+  const [imageLoadError, setImageLoadError] = useState(false);
+
+  if (imageLoadError) {
+    return null;
+  }
+
+  return (
+    <IonImg
+      className="block rounded-sm size-8 shrink-0"
+      src={metadata?.favicon}
+      onIonError={() => void setImageLoadError(true)}
+      ref={(elt) => void (elt && !elt.src && setImageLoadError(true))}
+    />
   );
 }

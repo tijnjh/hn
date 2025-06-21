@@ -25,19 +25,26 @@ export default function HomePage() {
       `https://node-hnapi.herokuapp.com/news?page=${pageParam}`,
     );
 
-    const metadataPromises = stories.map((story: Story) =>
-      ofetch<EchoscrapeResponse>(`https://echoscrape.tijn.dev/${story.url}`)
+    stories
+      .filter((story: Story) => !story.url.startsWith("https://"))
+      .forEach((story: Story) => console.log(story.url));
+
+    const metadatas = await Promise.all(
+      stories.map((story: Story) =>
+        story.url.startsWith("https://")
+          ? ofetch<EchoscrapeResponse>(
+            `https://echoscrape.tijn.dev/${story.url}`,
+          )
+          : Promise.resolve(undefined)
+      ),
     );
 
-    const metadatas = await Promise.all(metadataPromises);
-
-    for (let i = 0; i < stories.length; i++) {
-      stories[i].metadata = metadatas[i];
-    }
+    stories.forEach((story: Story, i: number) => {
+      story.metadata = metadatas[i];
+    });
 
     return stories;
   }
-
   const { isPending, data, fetchNextPage } = useInfiniteQuery<
     Story[]
   >({
