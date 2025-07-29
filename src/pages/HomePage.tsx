@@ -1,17 +1,28 @@
-import type { Story } from '@/lib/types'
 import { IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonInfiniteScroll, IonInfiniteScrollContent, IonList, IonPage, IonRefresher, IonRefresherContent, IonSpinner, IonTitle, IonToolbar } from '@ionic/react'
 import { useInfiniteQuery } from '@tanstack/react-query'
+import { Schema } from 'effect'
 import { logoGithub } from 'ionicons/icons'
 import { ofetch } from 'ofetch'
 import { Fragment } from 'react'
+import { tryCatch } from 'typecatch'
 import StoryListing from '@/components/StoryListing'
+import * as s from '@/lib/types'
 
 export default function HomePage() {
   async function fetchStories({ pageParam }: { pageParam: unknown }) {
-    return await ofetch(`https://node-hnapi.herokuapp.com/news?page=${pageParam}`)
+    const res = await ofetch(`https://node-hnapi.herokuapp.com/news?page=${pageParam}`)
+
+    const { data, error } = tryCatch(() => Schema.decodeSync(Schema.Array(s.story))(res))
+
+    if (error) {
+      console.error(error)
+      return
+    }
+
+    return data
   }
 
-  const { isPending, data, refetch, fetchNextPage } = useInfiniteQuery<Story[]>({
+  const { isPending, data, refetch, fetchNextPage } = useInfiniteQuery({
     queryKey: ['stories'],
     queryFn: fetchStories,
     initialPageParam: 1,
@@ -55,8 +66,8 @@ export default function HomePage() {
 
         <IonList>
           {data?.pages.map(stories => (
-            <Fragment key={stories[0].id}>
-              {stories.map(story => (
+            <Fragment key={stories?.[0].id}>
+              {stories?.map(story => (
                 <StoryListing key={story.id} story={story} />
               ))}
             </Fragment>

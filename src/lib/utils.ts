@@ -1,19 +1,17 @@
 import { formatDistanceToNow } from 'date-fns'
+import { Data, Effect, Schema } from 'effect'
 
-export function relativify(uts: number) {
+export const relativify = Effect.fn(function* (uts: number) {
   const timestamp = uts * 1000
   const date = new Date(timestamp)
   const formatted = formatDistanceToNow(date, { addSuffix: true })
   return formatted.replace('about', '')
-}
+})
 
-export function formatUrl(url: string) {
-  const parsedUrl = URL.parse(url)
+export class UrlParsingError extends Data.TaggedError('UrlParsingError')<{ message: string }> {}
 
-  if (!parsedUrl) {
-    throw new Error('something went wrong when trying to parse a story url')
-  }
-
-  const hostname = parsedUrl?.hostname
-  return hostname?.startsWith('www.') ? hostname.replace('www.', '') : hostname
-}
+export const formatUrl = Effect.fn(function* (url: string) {
+  return yield* Schema.decode(Schema.URL)(url).pipe(
+    Effect.map(({ hostname }) => hostname.replace(/^www\./, '')),
+  )
+})

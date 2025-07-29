@@ -1,9 +1,13 @@
 import type { Story } from '@/lib/types'
 import { IonAvatar, IonIcon, IonItem, IonLabel, IonNote } from '@ionic/react'
+import { Effect } from 'effect'
 import { arrowUp } from 'ionicons/icons'
+import { tryCatch } from 'typecatch'
 import { formatUrl, relativify } from '@/lib/utils'
 
 export default function StoryListing({ story }: { story: Story }) {
+  const { data: url = '' } = tryCatch(() => Effect.runSync(formatUrl(story.url)))
+
   return (
     <IonItem
       routerLink={`/story/${story.id}`}
@@ -32,12 +36,12 @@ export default function StoryListing({ story }: { story: Story }) {
           {story.points}
           <IonIcon icon={arrowUp} />
           <span className="mx-2">&bull;</span>
-          <span className="shrink-0">{relativify(story.time)}</span>
+          <span className="shrink-0">{Effect.runSync(relativify(story.time))}</span>
           {story.url.startsWith('http') && (
             <>
               <span className="mx-2">&bull;</span>
               <span className="truncate">
-                {formatUrl(story.url)}
+                {url}
               </span>
             </>
           )}

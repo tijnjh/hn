@@ -1,12 +1,13 @@
 /* eslint-disable react-dom/no-dangerously-set-innerhtml */
-import type { Story } from '@/lib/types'
+import type { Comment } from '@/lib/types'
 import { IonIcon, IonItem, IonLabel, IonText } from '@ionic/react'
+import { Effect } from 'effect'
 import { chevronDown, chevronUp } from 'ionicons/icons'
 import { relativify } from '@/lib/utils'
 import './rainbow.css'
 
 interface CommentItemProps {
-  comment: Story['comments'][0]
+  comment: Comment
   collapsedThreads: Set<number>
   toggleCollapse: (commentId: number) => void
   level?: number
@@ -43,7 +44,7 @@ export function CommentItem({ comment, collapsedThreads, toggleCollapse, level =
               <span className="mx-2">
                 &bull;
               </span>
-              {relativify(comment.time)}
+              {Effect.runSync(relativify(comment.time))}
               <span className="ml-auto">
                 <IonIcon icon={!isCollapsed ? chevronUp : chevronDown} />
               </span>

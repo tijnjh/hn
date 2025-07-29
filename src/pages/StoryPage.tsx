@@ -2,11 +2,14 @@
 import type { Story } from '@/lib/types'
 import { IonAvatar, IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonPage, IonRefresher, IonRefresherContent, IonSpinner, IonToolbar } from '@ionic/react'
 import { useQuery } from '@tanstack/react-query'
+import { Effect, Schema } from 'effect'
 import { arrowUp, openOutline } from 'ionicons/icons'
 import { haptic } from 'ios-haptics'
 import { ofetch } from 'ofetch'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { tryCatch } from 'typecatch'
 import { CommentItem } from '@/components/CommentItem'
+import * as s from '@/lib/types'
 import { formatUrl, relativify } from '@/lib/utils'
 
 interface StoryPageProps {
@@ -31,10 +34,12 @@ export default function StoryPage({ match: { params } }: StoryPageProps) {
 
   const url = `https://node-hnapi.herokuapp.com/item/${params.id}`
 
-  const { isPending, data, refetch } = useQuery<Story>({
+  const { isPending, data: raw, refetch } = useQuery({
     queryKey: [`story-${params.id}`],
     queryFn: () => ofetch(url),
   })
+
+  const data = useMemo(() => raw ? Schema.decodeSync(s.story)(raw) : {} as Story, [raw])
 
   useEffect(() => {
     if (!story) {
@@ -67,7 +72,7 @@ export default function StoryPage({ match: { params } }: StoryPageProps) {
           <IonButtons slot="end">
             {isExternalLink && (
               <IonButton href={story?.url} target="_blank">
-                {story?.url && formatUrl(story.url)}
+                {story?.url && (tryCatch(() => Effect.runSync(formatUrl(story.url))).data ?? '')}
                 <IonIcon slot="end" icon={openOutline} />
               </IonButton>
             )}
@@ -112,7 +117,7 @@ export default function StoryPage({ match: { params } }: StoryPageProps) {
                       &bull;
                     </span>
                     <span className="shrink-0">
-                      {relativify(story.time)}
+                      {Effect.runSync(relativify(story.time))}
                     </span>
                     {isExternalLink && (
                       <>
@@ -120,7 +125,7 @@ export default function StoryPage({ match: { params } }: StoryPageProps) {
                           &bull;
                         </span>
                         <span className="truncate">
-                          {formatUrl(story.url)}
+                          {Effect.runSync(relativify(story.time))}
                         </span>
                       </>
                     )}
